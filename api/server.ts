@@ -9,25 +9,31 @@ dotenv.config();
 const app = express();
 const port = 3333;
 
-// Habilita CORS
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type']
 }));
 
-// Permitir receber JSON
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// POST /contact
 app.post('/contact', async (req, res) => {
   const { nome, sobrenome, telefone, email, mensagem } = req.body;
 
   console.log('📩 Nova mensagem recebida:', req.body);
+  console.log('--- Verificando variáveis de ambiente ---');
+  console.log('EMAIL_USER:', process.env.EMAIL_USER ? 'Carregado' : 'NÃO ENCONTRADO');
+  console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? 'Carregado' : 'NÃO ENCONTRADO');
+  console.log('------------------------------------');
+
+
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.error('❌ Variáveis de ambiente EMAIL_USER ou EMAIL_PASS não estão definidas.');
+    return res.status(500).json({ message: 'Erro de configuração no servidor.' });
+  }
 
   try {
-    // Configurar transporte SMTP do Gmail
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -36,7 +42,6 @@ app.post('/contact', async (req, res) => {
       }
     });
 
-    // Configurar o conteúdo do e-mail
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_TO,
@@ -50,7 +55,7 @@ app.post('/contact', async (req, res) => {
       `
     };
 
-    // Enviar e-mail
+    console.log('✉️  Tentando enviar o e-mail...');
     await transporter.sendMail(mailOptions);
 
     console.log('✅ E-mail enviado com sucesso!');
@@ -61,7 +66,6 @@ app.post('/contact', async (req, res) => {
   }
 });
 
-// Iniciar servidor
 app.listen(port, () => {
   console.log(`🚀 Servidor rodando em http://localhost:${port}`);
 });

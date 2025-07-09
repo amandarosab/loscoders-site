@@ -9,6 +9,14 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: true,
     port: 8080,
+    // ADICIONE ESTA SEÇÃO DE PROXY
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3333', // O endereço do seu backend
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''), // Remove /api do caminho final
+      },
+    },
   },
   plugins: [
     react(),

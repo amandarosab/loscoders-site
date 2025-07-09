@@ -10,20 +10,18 @@ const Portfolio = () => {
       description: 'Plataforma completa de vendas online',
       category: 'Sites institucionais',
       image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=400&fit=crop',
-      link: 'https://seu-ecommerce.com.br'
-    },
+      link: 'https://seu-ecommerce.com.br'},
     {
       id: 2,
       title: 'Hélio Amado Consultores Associados',
       description: 'Consultoria em gestão empresarial',
       category: 'Landing page',
       image: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&h=400&fit=crop',
-      link: 'https://seu-app-delivery.com.br'
-    },
+      link: 'https://helioamado.com.br/site/'},
     {
       id: 3,
       title: 'Focous HR',
-      description: 'Sistema de Avaliação de Desempenho',
+      description: 'Sistema de Gestão de Pessoas',
       category: 'Sites institucionais',
       image: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&h=400&fit=crop',
       link: 'https://seu-app-delivery.com.br'

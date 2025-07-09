@@ -22,7 +22,7 @@ const Contact = () => {
       console.log("🟠 handleSubmit acionado");
 
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch(apiUrl, { // <--- USA A NOVA VARIÁVEL
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

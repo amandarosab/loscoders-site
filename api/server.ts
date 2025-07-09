@@ -1,3 +1,4 @@
+
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -9,24 +10,40 @@ dotenv.config();
 const app = express();
 const port = 3333;
 
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type']
-}));
+// --- CONFIGURAÇÃO DE CORS ATUALIZADA ---
+// Lista de domínios que podem aceder à sua API
+const allowedOrigins = [
+  'http://localhost:8080',    // Para o seu ambiente de desenvolvimento
+  'https://loscoders.com.br'  // O seu site em produção na Vercel
+];
 
+const corsOptions: cors.CorsOptions = {
+  origin: (origin, callback) => {
+    // Permite requisições sem 'origin' (como Postman ou apps mobile)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'A política de CORS para este site não permite acesso da origem especificada.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+};
+
+// Usa as novas opções de CORS
+app.use(cors(corsOptions));
+// --- FIM DA ATUALIZAÇÃO ---
+
+
+// Permitir receber JSON
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// POST /contact
 app.post('/contact', async (req, res) => {
   const { nome, sobrenome, telefone, email, mensagem } = req.body;
 
   console.log('📩 Nova mensagem recebida:', req.body);
-  console.log('--- Verificando variáveis de ambiente ---');
-  console.log('EMAIL_USER:', process.env.EMAIL_USER ? 'Carregado' : 'NÃO ENCONTRADO');
-  console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? 'Carregado' : 'NÃO ENCONTRADO');
-  console.log('------------------------------------');
-
 
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     console.error('❌ Variáveis de ambiente EMAIL_USER ou EMAIL_PASS não estão definidas.');
@@ -55,9 +72,7 @@ app.post('/contact', async (req, res) => {
       `
     };
 
-    console.log('✉️  Tentando enviar o e-mail...');
     await transporter.sendMail(mailOptions);
-
     console.log('✅ E-mail enviado com sucesso!');
     res.status(200).json({ message: 'Mensagem enviada com sucesso!' });
   } catch (error) {
